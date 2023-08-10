@@ -6,4 +6,20 @@ type AlignmentDirection = "flex-end" | "flex-start" | "center";
 
 type Direction = "vertical" | "horizontal";
 
-export { AlignmentPosition, FlexDirection, AlignmentDirection, Direction }
+type PageStatus = "loading" | "success" | "error";
+
+type OGResponse = {
+    data: {
+        url: string,
+        name: string,
+        title: string,
+        description: string,
+        image: string,
+    },
+    error: {
+        type: string,
+        message: string,
+    }
+} | null
+
+export { AlignmentPosition, FlexDirection, AlignmentDirection, Direction, PageStatus, OGResponse }

@@ -1,8 +1,10 @@
-import React, { Fragment } from "react"
-import { AlignmentDirection, AlignmentPosition, Direction, FlexDirection } from "./types";
+import React, { Fragment, useEffect, useRef, useState } from "react"
+import { AlignmentDirection, AlignmentPosition, Direction, FlexDirection, OGResponse, PageStatus } from "./types";
 import { PreviewLinkImage } from "./PreviewLinkImage"
+import APIRequest from "../request";
 
 type PreviewLinkProps = {
+    url: string,
     width: number,
     height: number,
     margin: number,
@@ -23,9 +25,33 @@ const container_flex_direction = {
 
 
 const PreviewLink = (props: PreviewLinkProps) => {
+    const [pageStatus, setPageStatus] = useState<PageStatus>("loading");
+    const [ogInfo, setOGInfo] = useState<OGResponse>(null);
 
-    const get_direction = ():Direction=> {
-        if(props.imagePosition == "left" || props.imagePosition == "right")
+    const isUnmounted = useRef<boolean>();
+
+    useEffect(() => {
+        isUnmounted.current = false;
+        load();
+        return ()=>{
+            isUnmounted.current = true;
+        }
+    }, [props.url])
+
+    const load = async () => {
+        const response = await APIRequest.OGInfo(props.url);
+        if(isUnmounted.current){
+            return;
+        }
+        if (response.error || response.data?.error) {
+            setPageStatus("error");
+            return;
+        }
+        setOGInfo(response.data);
+        setPageStatus("success");
+    }
+    const get_direction = (): Direction => {
+        if (props.imagePosition == "left" || props.imagePosition == "right")
             return "horizontal";
         return "vertical";
     }
@@ -45,32 +71,45 @@ const PreviewLink = (props: PreviewLinkProps) => {
             flexDirection: "column",
             alignItems: props.contentHorizontalAlignment,
             justifyContent: props.contentVerticalAlignment,
-            backgroundColor: "greenyellow",
-            width: general_direction == "vertical" ? "100%" : `${100-props.imageCoverage}%`,
-            height: general_direction == "horizontal" ? "100%" : `${100-props.imageCoverage}%`,
+            width: general_direction == "vertical" ? "100%" : `${100 - props.imageCoverage}%`,
+            height: general_direction == "horizontal" ? "100%" : `${100 - props.imageCoverage}%`,
         }
     }
 
     const get_image_container_style = (): React.CSSProperties => {
         const general_direction = get_direction();
         return {
-            backgroundColor: "violet",
             width: general_direction == "vertical" ? "100%" : `${props.imageCoverage}%`,
             height: general_direction == "horizontal" ? "100%" : `${props.imageCoverage}%`,
         }
     }
+    if (pageStatus == "loading")
+        return <span>Loading</span>
     return <Fragment>
-        <div style={{ display: "flex", border: props.border, width: props.width, height: props.height, borderRadius: 2, }}>
+        <div style={{ display: "flex", border: props.border, width: props.width, height: props.height, borderRadius: 10, }}>
             <div style={get_container_style()}>
                 <div style={get_image_container_style()}>
-                    <PreviewLinkImage />
+                    <PreviewLinkImage
+                        src={ogInfo?.data.image}
+                    />
                 </div>
                 <div style={get_content_style()}>
                     <div>
-                        <span>Title</span>
+                        <span style={{ fontWeight: "bold" }}>{ogInfo?.data.title}</span>
                     </div>
                     <div>
-                        <span>Description</span>
+                        <span>{ogInfo?.data.description}</span>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                        <div>
+                            {ogInfo?.data.name}
+                        </div>
+                        <div>
+                            •
+                        </div>
+                        <div>
+                            {ogInfo?.data.url}
+                        </div>
                     </div>
                 </div>
             </div>

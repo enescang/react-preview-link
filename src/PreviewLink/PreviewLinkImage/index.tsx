@@ -1,13 +1,13 @@
 import { Fragment } from "react";
 
 type PreviewLinkImageProps = {
-
+    src: string | undefined
 }
 
 const PreviewLinkImage = (props: PreviewLinkImageProps) => {
     return <Fragment>
         <img
-            src={"https://fastly.picsum.photos/id/622/400/400.jpg?hmac=-sZTkXOqFpCDohvWh4f44S9QkjYKHTa7nkf0gh6JJuY"}
+            src={props.src}
             style={{
                 width: "100%",
                 height: "100%",

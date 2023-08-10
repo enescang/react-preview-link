@@ -1,13 +1,14 @@
+import { OGResponse } from "../PreviewLink/types"
 import Config from "../config"
 
-type RequestResponse = {
-    data: Object | null
-    error: Object | null
+type RequestResponse<T> = {
+    data: T
+    error: Object | string | null
 }
 
 interface IRequest {
     baseURL: string
-    Get(path: string): Promise<RequestResponse>
+    Get(path: string): Promise<RequestResponse<any>>
 }
 
 class $Request implements IRequest {
@@ -16,7 +17,7 @@ class $Request implements IRequest {
     constructor() {
     }
 
-    Get = async (path: string): Promise<RequestResponse> => {
+    Get = async (path: string): Promise<RequestResponse<any>> => {
         try {
             const url = this.baseURL + path;
             const response = await fetch(url);
@@ -27,7 +28,7 @@ class $Request implements IRequest {
         }
     }
 
-    OGInfo = async(url:string): Promise<RequestResponse> => {
+    OGInfo = async (url: string): Promise<RequestResponse<OGResponse>> => {
         return this.Get(`/api/v1/og?q=${url}`);
     }
 }
