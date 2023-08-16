@@ -1,6 +1,6 @@
 {
   "name": "react-preview-link",
-  "version": "1.0.0",
+  "version": "1.0.1-alfa",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -12,7 +12,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve  --hot --open --port 3000",
     "build": "webpack --config webpack.config.js --mode development",
-    "rollup-build-lib": "rollup -c"
+    "make-package": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
     "url": "https://github.com/enescang/react-preview-link/issues"
   },
   "homepage": "https://github.com/enescang/react-preview-link#readme",
-  "dependencies": {
+  "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
