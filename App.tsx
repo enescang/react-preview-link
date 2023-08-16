@@ -14,6 +14,7 @@ const App = () => {
                     height={390}
                     margin={0}
                     imageCoverage={70}
+                    direction={"vertical"}
                     content={{
                         vertical: "flex-start",
                         horizontal: "flex-start",
@@ -30,20 +31,7 @@ const App = () => {
                 <PreviewLink
                     key={url}
                     url={url}
-                    direction={"horizontal"}
-                    width={790}
-                    height={100}
-                    margin={0}
-                    imageCoverage={15}
-                    content={{
-                        vertical: "flex-start",
-                        horizontal: "flex-start",
-                        margin: "0px 0px 8px 5px",
-                    }}
-                    image={{
-                        margin: 4,
-                        borderRadius: 10,
-                    }}
+                
                 />
             </div>
         </div>

@@ -111,7 +111,7 @@ const PreviewLink = (props: PreviewLinkProps) => {
                     <div>
                         <span>{ogInfo?.data.description}</span>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div style={{ display: "flex", flexDirection: "row", gap: 5 }}>
                         <div>
                             {ogInfo?.data.name}
                         </div>
@@ -129,17 +129,24 @@ const PreviewLink = (props: PreviewLinkProps) => {
 }
 
 PreviewLink.defaultProps = {
-    width: 340,
-    height: 120,
+    url: "",
+    width: 790,
+    height: 100,
     margin: 0.9,
     border: "1px solid gray",
-    direction: "vertical",
+    direction: "horizontal",
     reverse: false,
-    imageCoverage: 30,
+    imageCoverage: 15,
+    content: {
+        vertical: "flex-start",
+        horizontal: "flex-start",
+        margin: "0px 0px 1px 5px",
+        gap: 0,
+    },
     image: {
-        borderRadius: 0,
-        margin: 0,
+        margin: 3,
+        borderRadius: 4,
     }
-} as PreviewLinkProps
+} satisfies PreviewLinkProps
 
 export { PreviewLink }
