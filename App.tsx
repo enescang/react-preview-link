@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { PreviewLink, TestComponent } from "./src";
+import { PreviewLink } from "./src";
 
 const App = () => {
     const [url, setUrl] = useState<string>("https://www.npmjs.com/package/eazy-time");
