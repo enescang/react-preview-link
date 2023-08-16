@@ -3,7 +3,7 @@ type ConfigStructure = {
 }
 
 const Config: ConfigStructure = {
-    API: "http://localhost:9000"
+    API: "https://og-service.enescang.dev"
 }
 
 export default Config;
