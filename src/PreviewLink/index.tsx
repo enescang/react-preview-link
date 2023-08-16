@@ -9,10 +9,19 @@ type PreviewLinkProps = {
     height: number,
     margin: number,
     border: string,
-    imagePosition: AlignmentPosition,
+    direction: Direction
+    reverse: boolean,
     imageCoverage: number,
-    contentHorizontalAlignment: AlignmentDirection,
-    contentVerticalAlignment: AlignmentDirection,
+    content: {
+        vertical?: AlignmentDirection,
+        horizontal?: AlignmentDirection,
+        margin?: number | string,
+        gap?: number,
+    },
+    image: {
+        borderRadius?: number | string,
+        margin?: number | string,
+    }
 }
 
 const container_flex_direction = {
@@ -33,14 +42,14 @@ const PreviewLink = (props: PreviewLinkProps) => {
     useEffect(() => {
         isUnmounted.current = false;
         load();
-        return ()=>{
+        return () => {
             isUnmounted.current = true;
         }
     }, [props.url])
 
     const load = async () => {
         const response = await APIRequest.OGInfo(props.url);
-        if(isUnmounted.current){
+        if (isUnmounted.current) {
             return;
         }
         if (response.error || response.data?.error) {
@@ -50,37 +59,37 @@ const PreviewLink = (props: PreviewLinkProps) => {
         setOGInfo(response.data);
         setPageStatus("success");
     }
-    const get_direction = (): Direction => {
-        if (props.imagePosition == "left" || props.imagePosition == "right")
-            return "horizontal";
-        return "vertical";
-    }
 
     const get_container_style = (): React.CSSProperties => {
         return {
             display: "flex",
-            flexDirection: container_flex_direction[props.imagePosition],
+            flexDirection: container_flex_direction[props.direction == "vertical" ? (props.reverse ? "bottom" : "top") : (props.reverse ? "right" : "left")],
             margin: props.margin,
+            width:"100%",
+            height:"100%",
         }
     }
 
     const get_content_style = (): React.CSSProperties => {
-        const general_direction = get_direction();
+        const direction = props.direction;
         return {
             display: "flex",
             flexDirection: "column",
-            alignItems: props.contentHorizontalAlignment,
-            justifyContent: props.contentVerticalAlignment,
-            width: general_direction == "vertical" ? "100%" : `${100 - props.imageCoverage}%`,
-            height: general_direction == "horizontal" ? "100%" : `${100 - props.imageCoverage}%`,
+            alignItems: props.content?.horizontal,
+            justifyContent: props.content?.vertical,
+            width: direction == "vertical" ? "100%" : `${100 - props.imageCoverage}%`,
+            height: direction == "horizontal" ? "100%" : `${100 - props.imageCoverage}%`,
+            gap: props.content.gap,
+            margin: props.content.margin,
         }
     }
 
     const get_image_container_style = (): React.CSSProperties => {
-        const general_direction = get_direction();
+        const direction = props.direction;
         return {
-            width: general_direction == "vertical" ? "100%" : `${props.imageCoverage}%`,
-            height: general_direction == "horizontal" ? "100%" : `${props.imageCoverage}%`,
+            display: "flex",
+            width: direction == "vertical" ? "100%" : `${props.imageCoverage}%`,
+            height:  direction == "horizontal" ? "100%" : `${props.imageCoverage}%`,
         }
     }
     if (pageStatus == "loading")
@@ -91,6 +100,8 @@ const PreviewLink = (props: PreviewLinkProps) => {
                 <div style={get_image_container_style()}>
                     <PreviewLinkImage
                         src={ogInfo?.data.image}
+                        borderRadius={props.image.borderRadius}
+                        margin={props.image.margin}
                     />
                 </div>
                 <div style={get_content_style()}>
@@ -122,10 +133,13 @@ PreviewLink.defaultProps = {
     height: 120,
     margin: 0.9,
     border: "1px solid gray",
-    imagePosition: "left",
+    direction: "vertical",
+    reverse: false,
     imageCoverage: 30,
-    contentHorizontalAlignment: "center",
-    contentVerticalAlignment: "center"
+    image: {
+        borderRadius: 0,
+        margin: 0,
+    }
 } as PreviewLinkProps
 
 export { PreviewLink }
